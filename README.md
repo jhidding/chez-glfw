@@ -19,7 +19,8 @@ to port this to other scheme systems. Where there are imports from `(chezscheme)
 
 ## Requirements
 
-* R6RS scheme
-* Lyonesse - my own little pack of batteries; it has a minimal XML parser.
+* [ChezScheme](http://github.com/cisco/chezscheme/) - though most of the code is R6RS, 
+  the GL-ffi code is of course made for the Chez foreign interface.
+* [Lyonesse](http://github.com/jhidding/lyonesse/) - my own little pack of batteries; it has a minimal XML parser.
 * SRFI's 13 (string tools) and 48 (format)
 * GLFW - to create an OpenGL context, and access to keyboard, mouse etc.
