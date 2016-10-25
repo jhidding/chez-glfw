@@ -12,11 +12,8 @@
         (lyonesse munsch linear-algebra)
         (lyonesse foreign-data)
         (lyonesse strings)
-        
-        (only (chezscheme) foreign-alloc foreign-ref foreign-free
-                           foreign-sizeof unbox
-                           define-ftype ftype-ref ftype-&ref ftype-set! ftype-sizeof
-                           ftype-pointer-address make-ftype-pointer))
+
+        (only (chezscheme) unbox))
 
 (unless (glfw-init)
   (exit))
@@ -70,6 +67,24 @@
                  (   0  0 0 1))])
     (l:* M R)))
 
+(define (l:4x4:rotate-x M alpha)
+  (let* ([c (cos alpha)]
+         [s (sin alpha)]
+         [R (l:m (1    0  0 0)
+                 (0    c  s 0)
+                 (0 (- s) c 0)
+                 (0    0  0 1))])
+    (l:* M R)))
+
+(define (l:4x4:rotate-y M alpha)
+  (let* ([c (cos alpha)]
+         [s (sin alpha)]
+         [R (l:m (   c  0 s 0)
+                 (   0  1 0 0)
+                 ((- s) 0 c 0)
+                 (   0  0 0 1))])
+    (l:* M R)))
+
 (define (program-loop window program mvp-location)
   (let-values ([(width height) (glfw-get-framebuffer-size window)])
     (unless (glfw-window-should-close window)
@@ -94,7 +109,7 @@
     (glfw-terminate)
     (exit))
 
-  (glfw-set-window-close-callback window 
+  (glfw-set-window-close-callback window
     (lambda (w) (format #t "Goodbye!\n")))
 
   (glfw-set-key-callback window key-event)
@@ -118,7 +133,7 @@
          [fragment-shader (glCreateShader GL_FRAGMENT_SHADER)])
 
     (glBindBuffer GL_ARRAY_BUFFER vertex-buffer)
-    (glBufferData GL_ARRAY_BUFFER 
+    (glBufferData GL_ARRAY_BUFFER
                   (f32array-bytesize vertices) (f32array-data vertices)
                   GL_STATIC_DRAW)
 
@@ -148,4 +163,3 @@
         (program-loop window program mvp-location)))
 
   (glfw-terminate)))
-  
