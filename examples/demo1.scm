@@ -8,7 +8,7 @@
         (glfw gl support)
 
         (lyonesse functional)
-        (lyonesse munsch array)
+        (lyonesse munsch f32array)
         (lyonesse munsch linear-algebra)
         (lyonesse foreign-data)
         (lyonesse strings)
@@ -51,12 +51,6 @@
     "{"
     "    gl_FragColor = vec4(color, 1.0);"
     "}"))
-
-(define vertices
-  (vector->array 'float
-    '#(#(-0.6 -0.4 1.0 0.0 0.0)
-       #( 0.6 -0.4 0.0 1.0 0.0)
-       #( 0.0  0.6 0.0 0.0 1.0))))
 
 (define l:4x4:I
   (l:eye 4))
@@ -114,14 +108,18 @@
          [vertex-shader-ptr   (deref 'uptr vertex-shader-src)]
          [fragment-shader-src (string->char* fragment-shader-text)]
          [fragment-shader-ptr (deref 'uptr fragment-shader-src)]
-         
+
+         [vertices (m:f32a (-0.6 -0.4 1.0 0.0 0.0)
+                           ( 0.6 -0.4 0.0 1.0 0.0)
+                           ( 0.0  0.6 0.0 0.0 1.0))]
+
          [vertex-buffer   (get-value-by-ref 'unsigned-int ($ glGenBuffers 1 <>))]
          [vertex-shader   (glCreateShader GL_VERTEX_SHADER)]
          [fragment-shader (glCreateShader GL_FRAGMENT_SHADER)])
 
     (glBindBuffer GL_ARRAY_BUFFER vertex-buffer)
     (glBufferData GL_ARRAY_BUFFER 
-                  (array-byte-size vertices) (array-data-ptr vertices)
+                  (f32array-bytesize vertices) (f32array-data vertices)
                   GL_STATIC_DRAW)
 
     (glShaderSource vertex-shader 1 (unbox vertex-shader-ptr) 0)

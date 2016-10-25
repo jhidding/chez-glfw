@@ -1776,7 +1776,7 @@
   (define glBlendFunc (foreign-procedure "glBlendFunc" (unsigned-int unsigned-int) void))
   (define glBlendFuncSeparate (foreign-procedure "glBlendFuncSeparate" (unsigned-int unsigned-int unsigned-int unsigned-int) void))
   (define glBlitFramebuffer (foreign-procedure "glBlitFramebuffer" (int int int int int int int int unsigned-int unsigned-int) void))
-  (define glBufferData (foreign-procedure "glBufferData" (unsigned-int ptrdiff_t uptr unsigned-int) void))
+  (define glBufferData (foreign-procedure "glBufferData" (unsigned-int ptrdiff_t u8* unsigned-int) void))
   (define glBufferSubData (foreign-procedure "glBufferSubData" (unsigned-int ptrdiff_t ptrdiff_t uptr) void))
   (define glCallList (foreign-procedure "glCallList" (unsigned-int) void))
   (define glCallLists (foreign-procedure "glCallLists" (int unsigned-int uptr) void))
