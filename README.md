@@ -14,6 +14,7 @@ to port this to other scheme systems. Where there are imports from `(chezscheme)
 
 * Load OpenGL extensions at runtime: I'm not sure how to achieve this 
   within the confines of the hygienic Scheme system.
+* Vulkan support.
 * Higher level Scheme interface.
 
 

@@ -18,6 +18,9 @@
           glfw-create-window
           glfw-set-input-mode glfw-get-input-mode
 
+          glfw-get-framebuffer-size
+          glfw-get-time
+
           glfw-set-error-callback glfw-set-key-callback
           glfw-set-char-callback
           glfw-set-window-close-callback
@@ -222,6 +225,18 @@
   (define glfw-set-window-should-close
     (foreign-procedure "glfwSetWindowShouldClose" (uptr boolean) void))
 
+  (define glfw-get-framebuffer-size
+    (let ([get-framebuffer-size (foreign-procedure "glfwGetFramebufferSize" 
+                                                   (uptr uptr uptr) 
+                                                   void)])
+      (lambda (window)
+        (let* ([int-size (foreign-sizeof 'int)]
+               [data     (foreign-alloc (* 2 int-size))])
+          (get-framebuffer-size window data (+ data int-size))
+          (let ([w (foreign-ref 'int data 0)]
+                [h (foreign-ref 'int data int-size)])
+            (foreign-free data)
+            (values w h))))))
 
   #| Event polling ========================================================= |#
   (define glfw-poll-events
