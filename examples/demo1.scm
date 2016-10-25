@@ -87,12 +87,9 @@
         (glViewport 0 0 width height)
         (glClear GL_COLOR_BUFFER_BIT)
 
-        (glUseProgram program)
-        (gl:check-error 'glUseProgram)
-        (glUniformMatrix4fv mvp-location 1 GL_FALSE (l:matrix-data mvp))
-        (gl:check-error 'glUniformMatrix4fv)
-        (glDrawArrays GL_TRIANGLES 0 3)
-        (gl:check-error 'glDrawArrays)
+        (gl:check glUseProgram program)
+        (gl:check glUniformMatrix4fv mvp-location 1 GL_FALSE (l:matrix-data mvp))
+        (gl:check glDrawArrays GL_TRIANGLES 0 3)
 
         (glfw-swap-buffers window)
         (glfw-poll-events)
