@@ -23,5 +23,6 @@ to port this to other scheme systems. Where there are imports from `(chezscheme)
 * [ChezScheme](http://github.com/cisco/chezscheme/) - though most of the code is R6RS, 
   the GL-ffi code is of course made for the Chez foreign interface.
 * [Lyonesse](http://github.com/jhidding/lyonesse/) - my own little pack of batteries; it has a minimal XML parser.
+* [PFDS](http://github.com/jhidding/pfds/) - Ian Price's collection of Purely Functional Data Structures, with a small patch of my own.
 * SRFI's 13 (string tools) and 48 (format)
 * GLFW - to create an OpenGL context, and access to keyboard, mouse etc.
