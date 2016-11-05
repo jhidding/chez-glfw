@@ -5,6 +5,8 @@
         (glfw constants)
         (glfw gl GL_VERSION_3_0)
         (glfw gl support)
+        (glfw polygons)
+        (glfw linmath)
 
         (lyonesse record-with-context)
         (lyonesse functional)
@@ -40,48 +42,6 @@
 
 (define (random-uniform-real)
   (random 1.0))
-
-(define l:4x4:I
-  (l:eye 4))
-
-(define (l:4x4:ortho l r b t n f)
-  (l:m ((/ 2 (- r l))        0                   0                  0)
-       ( 0                  (/ 2 (- t b))        0                  0)
-       ( 0                   0                  (/ 2 (- f n))       0)
-       ((/ (+ r l) (- l r)) (/ (+ t b) (- b t)) (/ (+ f n) (- n f)) 1)))
-
-(define (l:4x4:affine M v)
-  (let ([M* (l:matrix->f32array M)]
-        [v* (l:vector->f32array v)]
-        [A* (make-f32array '(4 4))])
-    (f32array-copy! M* (f32array-cut A* (0 3) (0 3)))
-    (f32array-copy! v* (f32array-cut A* 3 (0 3)))
-    (f32array-copy! (f32a 0 0 0 1) (f32array-cut A* () 3))
-    (f32array->l:matrix A*)))
-
-(define (l:4x4:affine-deformation M)
-  (let ([M* (l:matrix->f32array M)])
-    (f32array->l:matrix (f32array-cut M* (0 3) (0 3)))))
-
-(define (l:4x4:affine-translation M)
-  (let ([M* (l:matrix->f32array M)])
-    (f32array->l:vector (f32array-cut M* (0 3) 3))))
-
-(define (l:4x4:look-at eye center up)
-  (let* ([f (g:normalize (g:- center eye))]
-         [s (g:normalize (g:cross f up))]
-         [t (g:cross s f)]
-         [M (l:m ((g:v-x s) (g:v-x t) (- (g:v-x f)))
-                 ((g:v-y s) (g:v-y t) (- (g:v-y f)))
-                 ((g:v-z s) (g:v-z t) (- (g:v-z f))))])
-    (l:4x4:affine M (l:* M (g:- g:origin eye)))))
-
-(define (l:4x4:perspective fov aspect n f)
-  (let ([a (/ 1 (tan (/ fov 2)))])
-    (l:m ((/ a aspect) 0  0                    0)
-         ( 0           a  0                    0)
-         ( 0           0 (/ (+ f n) (- n f))  -1)
-         ( 0           0 (/ (* 2 f n) (- n f)) 0))))
 
 #|================================================================|
  | Constants                                                      |
@@ -154,16 +114,13 @@
             (+ y (* y-inc dt ANIMATION-SPEED))
             x-inc*
             (* (sign y-inc*) 4 (sin (* deg pi 1/180)))
-            rot-y* rot-y-inc))))
+            rot-y* rot-y-inc*))))
 
 #|================================================================|
  | Event queue                                                    |
  |================================================================|#
 (define-record-type event
   (fields type time))
-
-;(define-record-type (box box box?)
-;  (fields (mutable element unbox set-box!))) 
 
 (define-record-type mouse-button-event
   (parent event) (fields button action)
@@ -223,30 +180,6 @@
         [(or (and (= key GLFW_KEY_ENTER) (= mods GLFW_MOD_ALT))
              (and (= key GLFW_KEY_F11)   (= mods GLFW_MOD_ALT)))
          (format #t "Full-screen mode is not yet implemented.")]))))
-
-#|================================================================|
- | Polygons                                                       |
- |================================================================|#
-(define-record-with-context polygon
-  (fields vertices normal info)
-  (protocol
-    (lambda (new)
-      (case-lambda
-        [(vertices) (make-polygon vertices #f)]
-        [(vertices info)
-         (let* ([normal (match vertices
-                          [(,a ,b ,c ,rest ...)
-                           (g:cross (g:- b a) (g:- c a))])])
-           (new vertices normal info))]))))
-
-(define (gl:draw-polygon p)
-  (with-polygon p
-    (glBegin GL_POLYGON)
-    (glNormal3fv (g:data normal))
-    (for-each (lambda (vertex)
-      (glVertex3fv (g:data vertex)))
-      vertices)
-    (gl:check glEnd)))
 
 #|================================================================|
  | Drawing the ball                                               |

@@ -6,6 +6,7 @@
         (glfw constants)
         (glfw gl GL_VERSION_3_0)
         (glfw gl support)
+        (glfw linmath)
 
         (lyonesse functional)
         (lyonesse munsch f32array)
@@ -48,42 +49,6 @@
     "{"
     "    gl_FragColor = vec4(color, 1.0);"
     "}"))
-
-(define l:4x4:I
-  (l:eye 4))
-
-(define (l:4x4:ortho l r b t n f)
-  (l:m ((/ 2 (- r l))        0                   0                  0)
-       ( 0                  (/ 2 (- t b))        0                  0)
-       ( 0                   0                  (/ 2 (- f n))       0)
-       ((/ (+ r l) (- l r)) (/ (+ t b) (- b t)) (/ (+ f n) (- n f)) 1)))
-
-(define (l:4x4:rotate-z M alpha)
-  (let* ([c (cos alpha)]
-         [s (sin alpha)]
-         [R (l:m (   c  s 0 0)
-                 ((- s) c 0 0)
-                 (   0  0 1 0)
-                 (   0  0 0 1))])
-    (l:* M R)))
-
-(define (l:4x4:rotate-x M alpha)
-  (let* ([c (cos alpha)]
-         [s (sin alpha)]
-         [R (l:m (1    0  0 0)
-                 (0    c  s 0)
-                 (0 (- s) c 0)
-                 (0    0  0 1))])
-    (l:* M R)))
-
-(define (l:4x4:rotate-y M alpha)
-  (let* ([c (cos alpha)]
-         [s (sin alpha)]
-         [R (l:m (   c  0 s 0)
-                 (   0  1 0 0)
-                 ((- s) 0 c 0)
-                 (   0  0 0 1))])
-    (l:* M R)))
 
 (define (program-loop window program mvp-location)
   (let-values ([(width height) (glfw-get-framebuffer-size window)])
