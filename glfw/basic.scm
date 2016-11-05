@@ -19,11 +19,16 @@
           glfw-set-input-mode glfw-get-input-mode
 
           glfw-get-framebuffer-size
-          glfw-get-time
+          glfw-get-time glfw-set-time
 
           glfw-set-error-callback glfw-set-key-callback
           glfw-set-char-callback
           glfw-set-window-close-callback
+          glfw-set-framebuffer-size-callback
+          glfw-set-mouse-button-callback
+          glfw-set-cursor-pos-callback
+
+          glfw-set-window-aspect-ratio
 
           glfw-make-context-current
           glfw-window-should-close glfw-set-window-should-close
@@ -163,6 +168,14 @@
   (define (glfw-set-char-callback window cb)
     ((foreign-procedure "glfwSetCharCallback" (uptr uptr) uptr)
      window (callback cb (uptr unsigned-32) void)))
+
+  (define (glfw-set-mouse-button-callback window cb)
+    ((foreign-procedure "glfwSetMouseButtonCallback" (uptr uptr) uptr)
+     window (callback cb (uptr int int int) void)))
+
+  (define (glfw-set-cursor-pos-callback window cb)
+    ((foreign-procedure "glfwSetCursorPosCallback" (uptr uptr) uptr)
+     window (callback cb (uptr double double) void)))
 
   #| Timing ================================================================ |#
   #|! This function returns the value of the GLFW timer. Unless the timer has

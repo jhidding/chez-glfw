@@ -124,9 +124,9 @@
          [fragment-shader-src (string->char* fragment-shader-text)]
          [fragment-shader-ptr (deref 'uptr fragment-shader-src)]
 
-         [vertices (m:f32a (-0.6 -0.4 1.0 0.0 0.0)
-                           ( 0.6 -0.4 0.0 1.0 0.0)
-                           ( 0.0  0.6 0.0 0.0 1.0))]
+         [vertices (f32a (-0.6 -0.4 1.0 0.0 0.0)
+                         ( 0.6 -0.4 0.0 1.0 0.0)
+                         ( 0.0  0.6 0.0 0.0 1.0))]
 
          [vertex-buffer   (get-value-by-ref 'unsigned-int ($ glGenBuffers 1 <>))]
          [vertex-shader   (glCreateShader GL_VERTEX_SHADER)]
