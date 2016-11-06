@@ -14,7 +14,9 @@
  |#
 
 (library (glfw basic)
-  (export glfw-init glfw-terminate glfw-get-version-string
+  (export with-glfw-vid-mode
+
+          glfw-init glfw-terminate glfw-get-version-string
           glfw-create-window
           glfw-set-input-mode glfw-get-input-mode
 
@@ -29,15 +31,20 @@
           glfw-set-cursor-pos-callback
 
           glfw-set-window-aspect-ratio
+          glfw-window-hint
+
+          glfw-get-primary-monitor
+          glfw-get-video-mode
 
           glfw-make-context-current
           glfw-window-should-close glfw-set-window-should-close
           glfw-swap-buffers glfw-swap-interval
           glfw-poll-events glfw-wait-events glfw-wait-events-timeout
-          
+
           glfw-get-proc-address glfw-extension-supported)
 
-  (import (chezscheme))
+  (import (chezscheme)
+          (lyonesse foreign-structs))
 
   (define-syntax callback
     (syntax-rules ()
@@ -47,6 +54,15 @@
          (foreign-callable-entry-point code)))))
 
   (define lib (load-shared-object "libglfw.so"))
+
+  #| Types ================================================================= |#
+  (define-foreign-struct glfw-vid-mode
+    [width        int]
+    [height       int]
+    [red-bits     int]
+    [green-bits   int]
+    [blue-bits    int]
+    [refresh-rate int])
 
   #| Library initialisation and tear-down ================================== |#
   (define glfw-init
@@ -58,17 +74,17 @@
   (define glfw-get-version-string
     (foreign-procedure "glfwGetVersionString" () string))
 
-  #|! This function sets an input mode option for the specified window. The 
-   |  mode must be one of `GLFW_CURSOR`, `GLFW_STICKY_KEYS` or 
+  #|! This function sets an input mode option for the specified window. The
+   |  mode must be one of `GLFW_CURSOR`, `GLFW_STICKY_KEYS` or
    |  `GLFW_STICKY_MOUSE_BUTTONS`.
-   | 
+   |
    |  If the mode is GLFW_CURSOR, the value must be one of the following cursor
    |  modes:
    |   * `GLFW_CURSOR_NORMAL` makes the cursor visible and behaving normally.
-   |   * `GLFW_CURSOR_HIDDEN` makes the cursor invisible when it is over the 
+   |   * `GLFW_CURSOR_HIDDEN` makes the cursor invisible when it is over the
    |     client area of the window but does not restrict the cursor from leaving.
-   |   * `GLFW_CURSOR_DISABLED` hides and grabs the cursor, providing virtual 
-   |     and unlimited cursor movement. This is useful for implementing for 
+   |   * `GLFW_CURSOR_DISABLED` hides and grabs the cursor, providing virtual
+   |     and unlimited cursor movement. This is useful for implementing for
    |     example 3D camera controls.
    |
    |  If the mode is `GLFW_STICKY_KEYS`, the value must be either `GLFW_TRUE`
@@ -181,7 +197,7 @@
   #|! This function returns the value of the GLFW timer. Unless the timer has
    |  been set using `glfw-set-time`, the timer measures time elapsed since
    |  GLFW was initialized.
-   | 
+   |
    |  The resolution of the timer is system dependent, but is usually on the
    |  order of a few micro- or nanoseconds. It uses the highest-resolution
    |  monotonic time source on each supported platform.
@@ -192,14 +208,21 @@
   (define glfw-get-time
     (foreign-procedure "glfwGetTime" () double))
 
-  #|! Set the GLFW time. It then continues to count up from that value. 
-   |  The value must be a positive finite number less than or equal to 
+  #|! Set the GLFW time. It then continues to count up from that value.
+   |  The value must be a positive finite number less than or equal to
    |  18446744073.0, which is approximately 584.5 years.
    |
    | time: double
    |#
   (define glfw-set-time
     (foreign-procedure "glfwSetTime" (double) void))
+
+  #| Monitors ============================================================== |#
+  (define glfw-get-primary-monitor
+    (foreign-procedure "glfwGetPrimaryMonitor" () uptr))
+
+  (define glfw-get-video-mode
+    (foreign-procedure "glfwGetVideoMode" (uptr) (* glfw-vid-mode)))
 
   #| Windowing ============================================================= |#
   #|! This function creates a window and its associated OpenGL or OpenGL ES
@@ -229,6 +252,9 @@
   (define glfw-destroy-window
     (foreign-procedure "glfwDestroyWindow" (uptr) void))
 
+  (define glfw-window-hint
+    (foreign-procedure "glfwWindowHint" (int int) void))
+
   (define glfw-set-window-aspect-ratio
     (foreign-procedure "glfwSetWindowAspectRatio" (uptr int int) void))
 
@@ -239,8 +265,8 @@
     (foreign-procedure "glfwSetWindowShouldClose" (uptr boolean) void))
 
   (define glfw-get-framebuffer-size
-    (let ([get-framebuffer-size (foreign-procedure "glfwGetFramebufferSize" 
-                                                   (uptr uptr uptr) 
+    (let ([get-framebuffer-size (foreign-procedure "glfwGetFramebufferSize"
+                                                   (uptr uptr uptr)
                                                    void)])
       (lambda (window)
         (let* ([int-size (foreign-sizeof 'int)]

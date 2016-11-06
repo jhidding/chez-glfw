@@ -2,8 +2,8 @@ OpenGL module for ChezScheme
 ============================
 
 ChezScheme comes with an OpenGL module, but that doesn't support the latest
-and greatest versions of OpenGL. This packages parses the Khronos registry 
-for OpenGL standards and creates bindings for OpenGL for whichever version 
+and greatest versions of OpenGL. This packages parses the Khronos registry
+for OpenGL standards and creates bindings for OpenGL for whichever version
 you need.
 
 I tried to stick to R6RS code as much as possible, so it should be possible
@@ -12,7 +12,7 @@ to port this to other scheme systems. Where there are imports from `(chezscheme)
 
 ## Future
 
-* Load OpenGL extensions at runtime: I'm not sure how to achieve this 
+* Load OpenGL extensions at runtime: I'm not sure how to achieve this
   within the confines of the hygienic Scheme system.
 * Vulkan support.
 * Higher level Scheme interface.
@@ -20,7 +20,7 @@ to port this to other scheme systems. Where there are imports from `(chezscheme)
 
 ## Requirements
 
-* [ChezScheme](http://github.com/cisco/chezscheme/) - though most of the code is R6RS, 
+* [ChezScheme](http://github.com/cisco/chezscheme/) - though most of the code is R6RS,
   the GL-ffi code is of course made for the Chez foreign interface.
 * [Lyonesse](http://github.com/jhidding/lyonesse/) - my own little pack of batteries; it has a minimal XML parser.
 * [PFDS](http://github.com/jhidding/pfds/) - Ian Price's collection of Purely Functional Data Structures, with a small patch of my own.
