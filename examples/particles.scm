@@ -9,6 +9,7 @@
 
         (glfw gl GL_VERSION_3_0))
 
+#| Vertex definition ===================================================== |#
 
 #| Game engine =========================================================== |#
 (define (game:main-loop program world event-queue)
