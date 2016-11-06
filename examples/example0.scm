@@ -4,7 +4,7 @@
         (glfw constants)
         (glfw gl GL_VERSION_3_0)
         (srfi :48)
-        
+
         (only (chezscheme) foreign-alloc foreign-ref foreign-free
                            foreign-sizeof))
 
@@ -22,7 +22,7 @@
      (eval '(begin <expr1> ...) <env>)]))
 
 (define (key-event window key scancode action mods)
-  (let ([action-str (cond 
+  (let ([action-str (cond
                       [(= action GLFW_PRESS) "press"]
                       [(= action GLFW_REPEAT) "repeat"]
                       [(= action GLFW_RELEASE) "release"]
@@ -48,7 +48,7 @@
     (glfw-terminate)
     (exit))
 
-  (glfw-set-window-close-callback window 
+  (glfw-set-window-close-callback window
     (lambda (w) (format #t "Goodbye!\n")))
 
   (glfw-set-key-callback window key-event)
@@ -63,4 +63,4 @@
 
   (program-loop window)
   (glfw-terminate))
-  
+
