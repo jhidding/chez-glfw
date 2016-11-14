@@ -1,6 +1,7 @@
 (import (rnrs (6))
 
         (lyonesse functional)
+        (lyonesse munsch)
 
         (glfw basic)
         (glfw support)
@@ -9,7 +10,82 @@
 
         (glfw gl GL_VERSION_3_0))
 
-#| Vertex definition ===================================================== |#
+#| Vertex definition ======================================================= |#
+(define-struct vertex
+  (texture (array f32 2))
+  (color   (struct u8 u8 u8 u8))
+  (point   (array f32 3)))
+
+#| Textures ================================================================ |#
+(define P_TEX_WIDTH  8)  ;  // Particle texture dimensions
+(define P_TEX_HEIGHT 8)
+(define F_TEX_WIDTH  16) ;  // Floor texture dimensions
+(define F_TEX_HEIGHT 16)
+
+
+; // Particle texture (a simple spot)
+; const unsigned char particle_texture[ P_TEX_WIDTH * P_TEX_HEIGHT ] = 
+(define particle-texture (bytearray u8
+  #x00 #x00 #x00 #x00 #x00 #x00 #x00 #x00
+  #x00 #x00 #x11 #x22 #x22 #x11 #x00 #x00
+  #x00 #x11 #x33 #x88 #x77 #x33 #x11 #x00
+  #x00 #x22 #x88 #xff #xee #x77 #x22 #x00
+  #x00 #x22 #x77 #xee #xff #x88 #x22 #x00
+  #x00 #x11 #x33 #x77 #x88 #x33 #x11 #x00
+  #x00 #x00 #x11 #x33 #x22 #x11 #x00 #x00
+  #x00 #x00 #x00 #x00 #x00 #x00 #x00 #x00)
+
+
+; // Floor texture (your basic checkered floor)
+; const unsigned char floor_texture[ F_TEX_WIDTH * F_TEX_HEIGHT ] = {
+(define floor-texture (bytearray u8
+  #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30
+  #xff #xf0 #xcc #xf0 #xf0 #xf0 #xff #xf0 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30
+  #xf0 #xcc #xee #xff #xf0 #xf0 #xf0 #xf0 #x30 #x66 #x30 #x30 #x30 #x20 #x30 #x30
+  #xf0 #xf0 #xf0 #xf0 #xf0 #xee #xf0 #xf0 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30
+  #xf0 #xf0 #xf0 #xf0 #xcc #xf0 #xf0 #xf0 #x30 #x30 #x55 #x30 #x30 #x44 #x30 #x30
+  #xf0 #xdd #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #x33 #x30 #x30 #x30 #x30 #x30 #x30 #x30
+  #xf0 #xf0 #xf0 #xf0 #xf0 #xff #xf0 #xf0 #x30 #x30 #x30 #x30 #x30 #x30 #x60 #x30
+  #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #x33 #x33 #x30 #x30 #x30 #x30 #x30 #x30
+  #x30 #x30 #x30 #x30 #x30 #x30 #x33 #x30 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0
+  #x30 #x30 #x30 #x30 #x30 #x20 #x30 #x30 #xf0 #xff #xf0 #xf0 #xdd #xf0 #xf0 #xff
+  #x30 #x30 #x30 #x30 #x30 #x30 #x55 #x33 #xf0 #xf0 #xf0 #xf0 #xf0 #xff #xf0 #xf0
+  #x30 #x44 #x66 #x30 #x30 #x30 #x30 #x30 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0
+  #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #xf0 #xf0 #xf0 #xaa #xf0 #xf0 #xcc #xf0
+  #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #xff #xf0 #xf0 #xf0 #xff #xf0 #xdd #xf0
+  #x30 #x30 #x30 #x77 #x30 #x30 #x30 #x30 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0
+  #x30 #x30 #x30 #x30 #x30 #x30 #x30 #x30 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0 #xf0)
+
+#| Demo variables ========================================================== |#
+;; Maximum number of particles
+(define MAX_PARTICLES   3000
+
+;; Life span of a particle (in seconds)
+(define LIFE_SPAN       8.)
+
+;; A new particle is born every [BIRTH_INTERVAL] second
+(define BIRTH_INTERVAL (/ LIFE_SPAN MAX_PARTICLES))
+
+;; Particle size (meters)
+(define PARTICLE_SIZE   0.7)
+
+;; Gravitational constant (m/s^2)
+(define GRAVITY         9.8)
+
+;; Base initial velocity (m/s)
+(define VELOCITY        8.)
+
+;; Bounce friction (1.0 = no friction, 0.0 = maximum friction)
+(define FRICTION        0.75)
+
+;; "Fountain" height (m)
+(define FOUNTAIN_HEIGHT 3.)
+
+;; Fountain radius (m)
+(define FOUNTAIN_RADIUS 1.6)
+
+;; Minimum delta-time for particle phisics (s)
+(define MIN_DELTA_T     (* BIRTH_INTERVAL 0.5))
 
 #| Game engine =========================================================== |#
 (define (game:main-loop program world event-queue)
