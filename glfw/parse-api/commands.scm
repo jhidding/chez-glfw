@@ -12,9 +12,8 @@
           (srfi :48)
           (only (srfi :13) string-tokenize)
 
-          (lyonesse functional)
-          (lyonesse match)
-          (lyonesse parsing xml)
+          (match)
+          (parsing xml)
           
           (glfw parse-api types))
 

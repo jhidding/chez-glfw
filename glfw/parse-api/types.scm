@@ -4,12 +4,11 @@
   (import (rnrs base (6))
           (rnrs lists (6))
           (rnrs control (6))
-          (lyonesse match)
-          (lyonesse functional)
-          (lyonesse parsing xml)
+          (match)
+          (parsing xml)
           (only (srfi :13) string-tokenize string-join string-prefix?))
 
-  (define (get-simple-type type) 
+  (define (get-simple-type type)
     (match type
       [(type (,attrs ...) ,def (name () ,name) ,semi-colon)
        (and name def (cons name (translate-ctype (cdr (string-tokenize def)))))]
@@ -25,7 +24,7 @@
       ("khronos_int64_t"    . integer-64)
       ("khronos_uint64_t"   . unsigned-64)
       ("khronos_intptr_t"   . iptr)
-      ("khronos_uintptr_t"  . uptr) 
+      ("khronos_uintptr_t"  . uptr)
       ("khronos_ssize_t"    . ssize_t)
       ("khronos_usize_t"    . size_t)
       ("khronos_float_t"    . float)))
@@ -78,9 +77,9 @@
              typedef)) types))
 
   (define extract-types
-    (compose resolve-self-ref 
-             ($ filter id <>) 
-             ($ map get-simple-type <>)
+    (compose resolve-self-ref
+             (cut filter values <>)
+             (cut map get-simple-type <>)
              xml:get))
 
   (define get-types
