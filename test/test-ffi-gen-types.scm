@@ -3,7 +3,10 @@
         (parsing xml)
         (gl-ffi-gen types)
         (gl-ffi-gen enums)
+        (gl-ffi-gen features)
+        (gl-ffi-gen commands)
         (gl-ffi-gen private utility)
+        (gl-ffi-gen private cut)
         (chez-test assertions))
 
 (define (alist? lst)
@@ -32,3 +35,16 @@
     (assert-predicate hashtable? enums)
     (assert-equal (enum-value (hashtable-ref enums "GL_FALSE" #f)) 0)
     (assert-equal (enum-value (hashtable-ref enums "GL_TRUE" #f)) 1)))
+
+(define (test-features)
+  (let* ((features (get-features registry)))
+    (assert-predicate list? features)
+    (assert-all feature? features)))
+
+(define (test-commands)
+  (let* ((types    (get-types registry))
+         (commands (get-commands registry types)))
+    (assert-predicate hashtable? commands)
+    (assert-all command? (map (cut hashtable-ref commands <> #f)
+                              (vector->list (hashtable-keys commands))))
+  ))

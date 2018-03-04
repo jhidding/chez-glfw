@@ -1,5 +1,5 @@
 (library (gl-ffi-gen private utility)
-  (export all? any? compose <<= pipe)
+  (export all? any? compose <<= pipe unique-sorted)
   (import (rnrs (6)))
 
   (define (compose f . rest)
@@ -19,4 +19,13 @@
 
   (define (pipe x . fs)
     ((apply compose (reverse fs)) x))
+
+  (define (unique-sorted =? lst)
+    (fold-right
+      (lambda (item lst)
+        (if (or (null? lst)
+                (not (=? item (car lst))))
+          (cons item lst)
+          lst))
+      '() lst))
 )

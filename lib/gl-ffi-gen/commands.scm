@@ -1,4 +1,4 @@
-(library (glfw parse-api commands)
+(library (gl-ffi-gen commands)
   (export get-commands print-command
           type? type-name type-category type-len type-group
           command? command-name command-return-type command-arguments)
@@ -15,7 +15,9 @@
           (match)
           (parsing xml)
 
-          (glfw parse-api types))
+          (gl-ffi-gen private utility)
+          (gl-ffi-gen private cut)
+          (gl-ffi-gen types))
 
   (define-record-type command
     (fields name return-type arguments))
@@ -43,16 +45,19 @@
       (format #t " (~a)" (type-group t)))
     (newline))
 
+  (define (append-map f . args)
+    (apply append (apply map f args)))
+
   (define (split-strings lst)
-    (apply append
-           (map (lambda (i)
-                  (if (string? i)
-                    (string-tokenize i)
-                    (list i)))
-                lst)))
+    (append-map
+      (lambda (i)
+        (if (string? i)
+          (string-tokenize i)
+          (list i)))
+        lst))
 
   (define (parse-type x type-reg)
-    (filter id
+    (filter values
       (map (lambda (y)
         (cond
           [(and (pair? y) (eq? (car y) 'ptype))
@@ -63,13 +68,14 @@
           [(equal? y "*") '*]
           [(equal? y "**") '**]
           [(equal? y "*const*") '**]
-          [(translate-ctype (list y)) => id]
+          [(translate-ctype (list y)) => values]
           [else (error 'parse-type "Didn't recognize type name." y x)]))
         x)))
 
   (define (make-composite-type x len group type-reg p)
     (match (parse-type x type-reg)
       [(,name) (make-type name 'unit len group)]
+      [(,name *) (make-type name 'pointer len group)]
       [(,name *) (make-type name 'pointer len group)]
       [(,name **) (make-type name 'pointer-to-pointer len group)]
       [,x (error 'make-composite-type "Don't understand." x p)]))
@@ -84,8 +90,8 @@
   (define (match-param param type-reg)
     (let* ([group (xml:get-attr param 'group)]
            [len*  (xml:get-attr param 'len)]
-           [len   (or (and (string? len*) (string->number len*)) len*)])
-      (match param
+           [len   (or (and (string? len*) (string->number len*)) len*)]) 
+      (match (xml->sexpr param)
         [(param ,attrs (ptype () ,x) (name () ,name)) (guard (string? x))
          (values name (make-type (type-reg x) 'unit len group))]
         [(param ,attrs ,x ... (name () ,name))
@@ -96,26 +102,29 @@
 
   (define (match-proto p type-reg)
     (let ([group (xml:get-attr p 'group)])
-      (match p
+      (match (xml->sexpr p)
         [(proto ,attrs (ptype () ,x) (name () ,name))
          (values name (make-type (type-reg x) 'unit #f group))]
         [(proto ,attrs ,x ... (name () ,name))
-         (values name (make-composite-type x #f #f type-reg p))]
+         (values name (make-composite-type (split-strings x) #f #f type-reg p))]
         [,x
          (error 'match-proto "Couldn't match proto." p)])))
 
   (define (command->rec command type-reg)
-    (let* ([safe-car (lambda (p) (and (pair? p) (car p)))]
-           [proto (safe-car (xml:get-all command 'proto))]
+    (let* ([proto (xml:get command 'proto)]
            [param (xml:get-all command 'param)])
       (let-values ([(name type) (match-proto proto type-reg)])
         (make-command
           name type
           (map (compose cons (cut match-param <> type-reg)) param)))))
 
-  (define (get-commands registry type-reg)
-    (let* ([command-lst (xml:get-all-path registry '(registry) '(commands (namespace . "GL")))]
-           [commands (make-hashtable string-hash equal? (length command-lst))])
+  (define (get-commands registry types)
+    (let* ([command-lst (xml:get-all-path registry '(commands (namespace . "GL")) '(command))]
+           [commands (make-hashtable string-hash equal? (length command-lst))]
+           [type-reg (lambda (x)
+                       (cond
+                         ((assoc x types) => cdr)
+                         (else #f)))])
       (for-each (lambda (c)
         (hashtable-set! commands (command-name c) c))
         (map (cut command->rec <> type-reg) command-lst))
