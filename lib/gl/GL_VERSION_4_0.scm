@@ -1,4 +1,4 @@
-(library (glfw gl GL_VERSION_4_0)
+(library (gl GL_VERSION_4_0)
   (export
     glActiveTexture
     glAttachShader

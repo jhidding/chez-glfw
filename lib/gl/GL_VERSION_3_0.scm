@@ -1,4 +1,4 @@
-(library (glfw gl GL_VERSION_3_0)
+(library (gl GL_VERSION_3_0)
   (export
     glAccum
     glActiveTexture

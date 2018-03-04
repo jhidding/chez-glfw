@@ -1,4 +1,4 @@
-(library (glfw gl GL_VERSION_4_6)
+(library (gl GL_VERSION_4_6)
   (export
     glActiveShaderProgram
     glActiveTexture

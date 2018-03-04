@@ -1,4 +1,4 @@
-(library (glfw gl GL_VERSION_1_1)
+(library (gl GL_VERSION_1_1)
   (export
     glAccum
     glAlphaFunc

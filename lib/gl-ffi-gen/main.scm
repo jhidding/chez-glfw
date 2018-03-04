@@ -90,7 +90,7 @@
                                                  'line (native-transcoder))])
 
         (write-lines port
-          (format "(library (glfw gl ~a)" name)
+          (format "(library (gl ~a)" name)
           "  (export"
           (map (cut format "    ~a" <>) command-lst)
           (map (cut format "    ~a" <>) enum-lst)
