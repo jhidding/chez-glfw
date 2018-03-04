@@ -1,18 +1,16 @@
-(library (glfw parse-api types)
+(library (gl-ffi-gen types)
   (export get-types translate-ctype)
 
   (import (rnrs base (6))
           (rnrs lists (6))
           (rnrs control (6))
+
+          (gl-ffi-gen private cut)
+          (gl-ffi-gen private utility)
+
           (match)
           (parsing xml)
           (only (srfi :13) string-tokenize string-join string-prefix?))
-
-  (define (get-simple-type type)
-    (match type
-      [(type (,attrs ...) ,def (name () ,name) ,semi-colon)
-       (and name def (cons name (translate-ctype (cdr (string-tokenize def)))))]
-      [,x #f]))
 
   (define khronos_types
     '(("khronos_int8_t"     . integer-8)
@@ -60,6 +58,19 @@
   (define ptr_types
     '(("void *"             . uptr)))
 
+  (define (get-simple-type type)
+    #|! Takes a type definition in the form
+     |    (type (...) "typedef ctype" (name () "typename") ";")
+     |  which was in XML
+     |    <type [attrs]>typedef ctype <name>typename</name>;
+     |  and returns a pair with
+     |    ("ctype" . scheme-ffi-type)
+     |#
+    (match type
+      [(type (,attrs ...) ,def (name () ,name) ,semi-colon)
+       (and name def (cons name (translate-ctype (cdr (string-tokenize def)))))]
+      [,x #f]))
+
   (define (translate-ctype type)
     (let ([type-str (string-join type)])
       (cond
@@ -76,16 +87,16 @@
              (cons (car typedef) (cdr (assoc (cdr typedef) types)))
              typedef)) types))
 
-  (define extract-types
-    (compose resolve-self-ref
-             (cut filter values <>)
-             (cut map get-simple-type <>)
-             xml:get))
+  (define (extract-types registry api)
+    (pipe (xml:get-all
+            (xml:get-path registry '(types)) 'type `(api . ,api))
+          (cut map xml->sexpr <>)
+          (cut map get-simple-type <>)
+          (cut filter values <>)
+          resolve-self-ref))
 
   (define get-types
     (case-lambda
-      [(registry)     (extract-types (xml:get* registry '(registry ()) '(types ()))
-                                     'type '((api . #f)))]
-      [(registry api) (extract-types (xml:get* registry '(registry ()) '(types ()))
-                                     'type `((api . ,api)))]))
+      [(registry)     (extract-types registry #f)]
+      [(registry api) (extract-types registry api)]))
 )

@@ -14,7 +14,7 @@
 
           (match)
           (parsing xml)
-          
+
           (glfw parse-api types))
 
   (define-record-type command
@@ -44,15 +44,15 @@
     (newline))
 
   (define (split-strings lst)
-    (apply append 
-           (map (lambda (i) 
-                  (if (string? i) 
-                    (string-tokenize i) 
+    (apply append
+           (map (lambda (i)
+                  (if (string? i)
+                    (string-tokenize i)
                     (list i)))
                 lst)))
 
   (define (parse-type x type-reg)
-    (filter id 
+    (filter id
       (map (lambda (y)
         (cond
           [(and (pair? y) (eq? (car y) 'ptype))
@@ -106,18 +106,18 @@
 
   (define (command->rec command type-reg)
     (let* ([safe-car (lambda (p) (and (pair? p) (car p)))]
-           [proto (safe-car (xml:get command 'proto '()))]
-           [param (xml:get command 'param '())])
+           [proto (safe-car (xml:get-all command 'proto))]
+           [param (xml:get-all command 'param)])
       (let-values ([(name type) (match-proto proto type-reg)])
-        (make-command 
-          name type 
-          (map (compose cons ($ match-param <> type-reg)) param)))))
+        (make-command
+          name type
+          (map (compose cons (cut match-param <> type-reg)) param)))))
 
   (define (get-commands registry type-reg)
-    (let* ([command-lst (xml:get* registry '(registry ()) '(commands ((namespace . "GL"))))]
+    (let* ([command-lst (xml:get-all-path registry '(registry) '(commands (namespace . "GL")))]
            [commands (make-hashtable string-hash equal? (length command-lst))])
       (for-each (lambda (c)
         (hashtable-set! commands (command-name c) c))
-        (map ($ command->rec <> type-reg) command-lst))
+        (map (cut command->rec <> type-reg) command-lst))
       commands))
 )
