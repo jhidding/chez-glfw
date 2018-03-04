@@ -605,9 +605,11 @@
     GL_BITMAP
     GL_BITMAP_TOKEN
     GL_BLEND
+    GL_BLEND_COLOR
     GL_BLEND_DST
     GL_BLEND_DST_ALPHA
     GL_BLEND_DST_RGB
+    GL_BLEND_EQUATION
     GL_BLEND_EQUATION_ALPHA
     GL_BLEND_EQUATION_RGB
     GL_BLEND_SRC
@@ -1569,8 +1571,8 @@
   (define glGetQueryObjectiv (foreign-procedure "glGetQueryObjectiv" (unsigned-int unsigned-int uptr) void))
   (define glGetQueryObjectuiv (foreign-procedure "glGetQueryObjectuiv" (unsigned-int unsigned-int uptr) void))
   (define glGetQueryiv (foreign-procedure "glGetQueryiv" (unsigned-int unsigned-int uptr) void))
-  (define glGetShaderInfoLog (foreign-procedure "glGetShaderInfoLog" (unsigned-int int u8* u8*) void))
-  (define glGetShaderSource (foreign-procedure "glGetShaderSource" (unsigned-int int u8* u8*) void))
+  (define glGetShaderInfoLog (foreign-procedure "glGetShaderInfoLog" (unsigned-int int uptr string) void))
+  (define glGetShaderSource (foreign-procedure "glGetShaderSource" (unsigned-int int uptr string) void))
   (define glGetShaderiv (foreign-procedure "glGetShaderiv" (unsigned-int unsigned-int uptr) void))
   (define glGetString (foreign-procedure "glGetString" (unsigned-int) string))
   (define glGetTexEnvfv (foreign-procedure "glGetTexEnvfv" (unsigned-int unsigned-int uptr) void))
@@ -2006,9 +2008,11 @@
   (define GL_BITMAP #x1A00)
   (define GL_BITMAP_TOKEN #x704)
   (define GL_BLEND #xBE2)
+  (define GL_BLEND_COLOR #x8005)
   (define GL_BLEND_DST #xBE0)
   (define GL_BLEND_DST_ALPHA #x80CA)
   (define GL_BLEND_DST_RGB #x80C8)
+  (define GL_BLEND_EQUATION #x8009)
   (define GL_BLEND_EQUATION_ALPHA #x883D)
   (define GL_BLEND_EQUATION_RGB #x8009)
   (define GL_BLEND_SRC #xBE1)

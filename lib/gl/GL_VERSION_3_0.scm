@@ -698,9 +698,11 @@
     GL_BITMAP
     GL_BITMAP_TOKEN
     GL_BLEND
+    GL_BLEND_COLOR
     GL_BLEND_DST
     GL_BLEND_DST_ALPHA
     GL_BLEND_DST_RGB
+    GL_BLEND_EQUATION
     GL_BLEND_EQUATION_ALPHA
     GL_BLEND_EQUATION_RGB
     GL_BLEND_SRC
@@ -1776,7 +1778,7 @@
   (define glBlendFunc (foreign-procedure "glBlendFunc" (unsigned-int unsigned-int) void))
   (define glBlendFuncSeparate (foreign-procedure "glBlendFuncSeparate" (unsigned-int unsigned-int unsigned-int unsigned-int) void))
   (define glBlitFramebuffer (foreign-procedure "glBlitFramebuffer" (int int int int int int int int unsigned-int unsigned-int) void))
-  (define glBufferData (foreign-procedure "glBufferData" (unsigned-int ptrdiff_t u8* unsigned-int) void))
+  (define glBufferData (foreign-procedure "glBufferData" (unsigned-int ptrdiff_t uptr unsigned-int) void))
   (define glBufferSubData (foreign-procedure "glBufferSubData" (unsigned-int ptrdiff_t ptrdiff_t uptr) void))
   (define glCallList (foreign-procedure "glCallList" (unsigned-int) void))
   (define glCallLists (foreign-procedure "glCallLists" (int unsigned-int uptr) void))
@@ -1957,7 +1959,7 @@
   (define glGetQueryObjectuiv (foreign-procedure "glGetQueryObjectuiv" (unsigned-int unsigned-int uptr) void))
   (define glGetQueryiv (foreign-procedure "glGetQueryiv" (unsigned-int unsigned-int uptr) void))
   (define glGetRenderbufferParameteriv (foreign-procedure "glGetRenderbufferParameteriv" (unsigned-int unsigned-int uptr) void))
-  (define glGetShaderInfoLog (foreign-procedure "glGetShaderInfoLog" (unsigned-int int u8* u8*) void))
+  (define glGetShaderInfoLog (foreign-procedure "glGetShaderInfoLog" (unsigned-int int uptr string) void))
   (define glGetShaderSource (foreign-procedure "glGetShaderSource" (unsigned-int int uptr string) void))
   (define glGetShaderiv (foreign-procedure "glGetShaderiv" (unsigned-int unsigned-int uptr) void))
   (define glGetString (foreign-procedure "glGetString" (unsigned-int) string))
@@ -2024,8 +2026,8 @@
   (define glLinkProgram (foreign-procedure "glLinkProgram" (unsigned-int) void))
   (define glListBase (foreign-procedure "glListBase" (unsigned-int) void))
   (define glLoadIdentity (foreign-procedure "glLoadIdentity" () void))
-  (define glLoadMatrixd (foreign-procedure "glLoadMatrixd" (u8*) void))
-  (define glLoadMatrixf (foreign-procedure "glLoadMatrixf" (u8*) void))
+  (define glLoadMatrixd (foreign-procedure "glLoadMatrixd" (uptr) void))
+  (define glLoadMatrixf (foreign-procedure "glLoadMatrixf" (uptr) void))
   (define glLoadName (foreign-procedure "glLoadName" (unsigned-int) void))
   (define glLoadTransposeMatrixd (foreign-procedure "glLoadTransposeMatrixd" (uptr) void))
   (define glLoadTransposeMatrixf (foreign-procedure "glLoadTransposeMatrixf" (uptr) void))
@@ -2089,7 +2091,7 @@
   (define glNormal3d (foreign-procedure "glNormal3d" (double double double) void))
   (define glNormal3dv (foreign-procedure "glNormal3dv" (uptr) void))
   (define glNormal3f (foreign-procedure "glNormal3f" (float float float) void))
-  (define glNormal3fv (foreign-procedure "glNormal3fv" (u8*) void))
+  (define glNormal3fv (foreign-procedure "glNormal3fv" (uptr) void))
   (define glNormal3i (foreign-procedure "glNormal3i" (int int int) void))
   (define glNormal3iv (foreign-procedure "glNormal3iv" (uptr) void))
   (define glNormal3s (foreign-procedure "glNormal3s" (short short short) void))
@@ -2279,7 +2281,7 @@
   (define glUniformMatrix3fv (foreign-procedure "glUniformMatrix3fv" (int int unsigned-8 uptr) void))
   (define glUniformMatrix3x2fv (foreign-procedure "glUniformMatrix3x2fv" (int int unsigned-8 uptr) void))
   (define glUniformMatrix3x4fv (foreign-procedure "glUniformMatrix3x4fv" (int int unsigned-8 uptr) void))
-  (define glUniformMatrix4fv (foreign-procedure "glUniformMatrix4fv" (int int unsigned-8 u8*) void))
+  (define glUniformMatrix4fv (foreign-procedure "glUniformMatrix4fv" (int int unsigned-8 uptr) void))
   (define glUniformMatrix4x2fv (foreign-procedure "glUniformMatrix4x2fv" (int int unsigned-8 uptr) void))
   (define glUniformMatrix4x3fv (foreign-procedure "glUniformMatrix4x3fv" (int int unsigned-8 uptr) void))
   (define glUnmapBuffer (foreign-procedure "glUnmapBuffer" (unsigned-int) unsigned-8))
@@ -2296,7 +2298,7 @@
   (define glVertex3d (foreign-procedure "glVertex3d" (double double double) void))
   (define glVertex3dv (foreign-procedure "glVertex3dv" (uptr) void))
   (define glVertex3f (foreign-procedure "glVertex3f" (float float float) void))
-  (define glVertex3fv (foreign-procedure "glVertex3fv" (u8*) void))
+  (define glVertex3fv (foreign-procedure "glVertex3fv" (uptr) void))
   (define glVertex3i (foreign-procedure "glVertex3i" (int int int) void))
   (define glVertex3iv (foreign-procedure "glVertex3iv" (uptr) void))
   (define glVertex3s (foreign-procedure "glVertex3s" (short short short) void))
@@ -2449,9 +2451,11 @@
   (define GL_BITMAP #x1A00)
   (define GL_BITMAP_TOKEN #x704)
   (define GL_BLEND #xBE2)
+  (define GL_BLEND_COLOR #x8005)
   (define GL_BLEND_DST #xBE0)
   (define GL_BLEND_DST_ALPHA #x80CA)
   (define GL_BLEND_DST_RGB #x80C8)
+  (define GL_BLEND_EQUATION #x8009)
   (define GL_BLEND_EQUATION_ALPHA #x883D)
   (define GL_BLEND_EQUATION_RGB #x8009)
   (define GL_BLEND_SRC #xBE1)

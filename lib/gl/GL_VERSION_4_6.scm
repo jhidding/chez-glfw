@@ -1,4 +1,4 @@
-(library (glfw gl GL_VERSION_4_5)
+(library (glfw gl GL_VERSION_4_6)
   (export
     glActiveShaderProgram
     glActiveTexture
@@ -361,9 +361,11 @@
     glMinSampleShading
     glMultiDrawArrays
     glMultiDrawArraysIndirect
+    glMultiDrawArraysIndirectCount
     glMultiDrawElements
     glMultiDrawElementsBaseVertex
     glMultiDrawElementsIndirect
+    glMultiDrawElementsIndirectCount
     glMultiTexCoordP1ui
     glMultiTexCoordP1uiv
     glMultiTexCoordP2ui
@@ -400,6 +402,7 @@
     glPointSize
     glPolygonMode
     glPolygonOffset
+    glPolygonOffsetClamp
     glPopDebugGroup
     glPrimitiveRestartIndex
     glProgramBinary
@@ -481,6 +484,7 @@
     glShaderBinary
     glShaderSource
     glShaderStorageBlockBinding
+    glSpecializeShader
     glStencilFunc
     glStencilFuncSeparate
     glStencilMask
@@ -794,6 +798,8 @@
     GL_CLEAR_TEXTURE
     GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT
     GL_CLIENT_STORAGE_BIT
+    GL_CLIPPING_INPUT_PRIMITIVES
+    GL_CLIPPING_OUTPUT_PRIMITIVES
     GL_CLIP_DEPTH_MODE
     GL_CLIP_DISTANCE0
     GL_CLIP_DISTANCE1
@@ -875,6 +881,7 @@
     GL_COMPRESSED_TEXTURE_FORMATS
     GL_COMPUTE_SHADER
     GL_COMPUTE_SHADER_BIT
+    GL_COMPUTE_SHADER_INVOCATIONS
     GL_COMPUTE_SUBROUTINE
     GL_COMPUTE_SUBROUTINE_UNIFORM
     GL_COMPUTE_TEXTURE
@@ -887,6 +894,7 @@
     GL_CONTEXT_FLAGS
     GL_CONTEXT_FLAG_DEBUG_BIT
     GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT
+    GL_CONTEXT_FLAG_NO_ERROR_BIT
     GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT
     GL_CONTEXT_LOST
     GL_CONTEXT_PROFILE_MASK
@@ -1033,6 +1041,7 @@
     GL_FRAGMENT_SHADER
     GL_FRAGMENT_SHADER_BIT
     GL_FRAGMENT_SHADER_DERIVATIVE_HINT
+    GL_FRAGMENT_SHADER_INVOCATIONS
     GL_FRAGMENT_SUBROUTINE
     GL_FRAGMENT_SUBROUTINE_UNIFORM
     GL_FRAGMENT_TEXTURE
@@ -1086,6 +1095,7 @@
     GL_GEOMETRY_SHADER
     GL_GEOMETRY_SHADER_BIT
     GL_GEOMETRY_SHADER_INVOCATIONS
+    GL_GEOMETRY_SHADER_PRIMITIVES_EMITTED
     GL_GEOMETRY_SUBROUTINE
     GL_GEOMETRY_SUBROUTINE_UNIFORM
     GL_GEOMETRY_TEXTURE
@@ -1351,6 +1361,7 @@
     GL_MAX_TEXTURE_BUFFER_SIZE
     GL_MAX_TEXTURE_IMAGE_UNITS
     GL_MAX_TEXTURE_LOD_BIAS
+    GL_MAX_TEXTURE_MAX_ANISOTROPY
     GL_MAX_TEXTURE_SIZE
     GL_MAX_TRANSFORM_FEEDBACK_BUFFERS
     GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS
@@ -1414,6 +1425,7 @@
     GL_NUM_SAMPLE_COUNTS
     GL_NUM_SHADER_BINARY_FORMATS
     GL_NUM_SHADING_LANGUAGE_VERSIONS
+    GL_NUM_SPIR_V_EXTENSIONS
     GL_OBJECT_TYPE
     GL_OFFSET
     GL_ONE
@@ -1441,6 +1453,8 @@
     GL_PACK_SKIP_PIXELS
     GL_PACK_SKIP_ROWS
     GL_PACK_SWAP_BYTES
+    GL_PARAMETER_BUFFER
+    GL_PARAMETER_BUFFER_BINDING
     GL_PATCHES
     GL_PATCH_DEFAULT_INNER_LEVEL
     GL_PATCH_DEFAULT_OUTER_LEVEL
@@ -1458,6 +1472,7 @@
     GL_POINT_SIZE_RANGE
     GL_POINT_SPRITE_COORD_ORIGIN
     GL_POLYGON_MODE
+    GL_POLYGON_OFFSET_CLAMP
     GL_POLYGON_OFFSET_FACTOR
     GL_POLYGON_OFFSET_FILL
     GL_POLYGON_OFFSET_LINE
@@ -1466,6 +1481,7 @@
     GL_POLYGON_SMOOTH
     GL_POLYGON_SMOOTH_HINT
     GL_PRIMITIVES_GENERATED
+    GL_PRIMITIVES_SUBMITTED
     GL_PRIMITIVE_RESTART
     GL_PRIMITIVE_RESTART_FIXED_INDEX
     GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED
@@ -1650,6 +1666,7 @@
     GL_SET
     GL_SHADER
     GL_SHADER_BINARY_FORMATS
+    GL_SHADER_BINARY_FORMAT_SPIR_V
     GL_SHADER_COMPILER
     GL_SHADER_IMAGE_ACCESS_BARRIER_BIT
     GL_SHADER_IMAGE_ATOMIC
@@ -1676,6 +1693,8 @@
     GL_SMOOTH_LINE_WIDTH_RANGE
     GL_SMOOTH_POINT_SIZE_GRANULARITY
     GL_SMOOTH_POINT_SIZE_RANGE
+    GL_SPIR_V_BINARY
+    GL_SPIR_V_EXTENSIONS
     GL_SRC1_ALPHA
     GL_SRC1_COLOR
     GL_SRC_ALPHA
@@ -1732,11 +1751,13 @@
     GL_TESS_CONTROL_OUTPUT_VERTICES
     GL_TESS_CONTROL_SHADER
     GL_TESS_CONTROL_SHADER_BIT
+    GL_TESS_CONTROL_SHADER_PATCHES
     GL_TESS_CONTROL_SUBROUTINE
     GL_TESS_CONTROL_SUBROUTINE_UNIFORM
     GL_TESS_CONTROL_TEXTURE
     GL_TESS_EVALUATION_SHADER
     GL_TESS_EVALUATION_SHADER_BIT
+    GL_TESS_EVALUATION_SHADER_INVOCATIONS
     GL_TESS_EVALUATION_SUBROUTINE
     GL_TESS_EVALUATION_SUBROUTINE_UNIFORM
     GL_TESS_EVALUATION_TEXTURE
@@ -1841,6 +1862,7 @@
     GL_TEXTURE_INTERNAL_FORMAT
     GL_TEXTURE_LOD_BIAS
     GL_TEXTURE_MAG_FILTER
+    GL_TEXTURE_MAX_ANISOTROPY
     GL_TEXTURE_MAX_LEVEL
     GL_TEXTURE_MAX_LOD
     GL_TEXTURE_MIN_FILTER
@@ -1887,8 +1909,10 @@
     GL_TRANSFORM_FEEDBACK_BUFFER_SIZE
     GL_TRANSFORM_FEEDBACK_BUFFER_START
     GL_TRANSFORM_FEEDBACK_BUFFER_STRIDE
+    GL_TRANSFORM_FEEDBACK_OVERFLOW
     GL_TRANSFORM_FEEDBACK_PAUSED
     GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN
+    GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW
     GL_TRANSFORM_FEEDBACK_VARYING
     GL_TRANSFORM_FEEDBACK_VARYINGS
     GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH
@@ -2013,9 +2037,11 @@
     GL_VERTEX_PROGRAM_POINT_SIZE
     GL_VERTEX_SHADER
     GL_VERTEX_SHADER_BIT
+    GL_VERTEX_SHADER_INVOCATIONS
     GL_VERTEX_SUBROUTINE
     GL_VERTEX_SUBROUTINE_UNIFORM
     GL_VERTEX_TEXTURE
+    GL_VERTICES_SUBMITTED
     GL_VIEWPORT
     GL_VIEWPORT_BOUNDS_RANGE
     GL_VIEWPORT_INDEX_PROVOKING_VERTEX
@@ -2411,9 +2437,11 @@
   (define glMinSampleShading (foreign-procedure "glMinSampleShading" (float) void))
   (define glMultiDrawArrays (foreign-procedure "glMultiDrawArrays" (unsigned-int uptr uptr int) void))
   (define glMultiDrawArraysIndirect (foreign-procedure "glMultiDrawArraysIndirect" (unsigned-int uptr int int) void))
+  (define glMultiDrawArraysIndirectCount (foreign-procedure "glMultiDrawArraysIndirectCount" (unsigned-int uptr ptrdiff_t int int) void))
   (define glMultiDrawElements (foreign-procedure "glMultiDrawElements" (unsigned-int uptr unsigned-int uptr int) void))
   (define glMultiDrawElementsBaseVertex (foreign-procedure "glMultiDrawElementsBaseVertex" (unsigned-int uptr unsigned-int uptr int uptr) void))
   (define glMultiDrawElementsIndirect (foreign-procedure "glMultiDrawElementsIndirect" (unsigned-int unsigned-int uptr int int) void))
+  (define glMultiDrawElementsIndirectCount (foreign-procedure "glMultiDrawElementsIndirectCount" (unsigned-int unsigned-int uptr ptrdiff_t int int) void))
   (define glMultiTexCoordP1ui (foreign-procedure "glMultiTexCoordP1ui" (unsigned-int unsigned-int unsigned-int) void))
   (define glMultiTexCoordP1uiv (foreign-procedure "glMultiTexCoordP1uiv" (unsigned-int unsigned-int uptr) void))
   (define glMultiTexCoordP2ui (foreign-procedure "glMultiTexCoordP2ui" (unsigned-int unsigned-int unsigned-int) void))
@@ -2450,6 +2478,7 @@
   (define glPointSize (foreign-procedure "glPointSize" (float) void))
   (define glPolygonMode (foreign-procedure "glPolygonMode" (unsigned-int unsigned-int) void))
   (define glPolygonOffset (foreign-procedure "glPolygonOffset" (float float) void))
+  (define glPolygonOffsetClamp (foreign-procedure "glPolygonOffsetClamp" (float float float) void))
   (define glPopDebugGroup (foreign-procedure "glPopDebugGroup" () void))
   (define glPrimitiveRestartIndex (foreign-procedure "glPrimitiveRestartIndex" (unsigned-int) void))
   (define glProgramBinary (foreign-procedure "glProgramBinary" (unsigned-int unsigned-int uptr int) void))
@@ -2531,6 +2560,7 @@
   (define glShaderBinary (foreign-procedure "glShaderBinary" (int uptr unsigned-int uptr int) void))
   (define glShaderSource (foreign-procedure "glShaderSource" (unsigned-int int uptr uptr) void))
   (define glShaderStorageBlockBinding (foreign-procedure "glShaderStorageBlockBinding" (unsigned-int unsigned-int unsigned-int) void))
+  (define glSpecializeShader (foreign-procedure "glSpecializeShader" (unsigned-int string unsigned-int uptr uptr) void))
   (define glStencilFunc (foreign-procedure "glStencilFunc" (unsigned-int int unsigned-int) void))
   (define glStencilFuncSeparate (foreign-procedure "glStencilFuncSeparate" (unsigned-int unsigned-int int unsigned-int) void))
   (define glStencilMask (foreign-procedure "glStencilMask" (unsigned-int) void))
@@ -2845,6 +2875,8 @@
   (define GL_CLEAR_TEXTURE #x9365)
   (define GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT #x4000)
   (define GL_CLIENT_STORAGE_BIT #x200)
+  (define GL_CLIPPING_INPUT_PRIMITIVES #x82F6)
+  (define GL_CLIPPING_OUTPUT_PRIMITIVES #x82F7)
   (define GL_CLIP_DEPTH_MODE #x935D)
   (define GL_CLIP_DISTANCE0 #x3000)
   (define GL_CLIP_DISTANCE1 #x3001)
@@ -2926,6 +2958,7 @@
   (define GL_COMPRESSED_TEXTURE_FORMATS #x86A3)
   (define GL_COMPUTE_SHADER #x91B9)
   (define GL_COMPUTE_SHADER_BIT #x20)
+  (define GL_COMPUTE_SHADER_INVOCATIONS #x82F5)
   (define GL_COMPUTE_SUBROUTINE #x92ED)
   (define GL_COMPUTE_SUBROUTINE_UNIFORM #x92F3)
   (define GL_COMPUTE_TEXTURE #x82A0)
@@ -2938,6 +2971,7 @@
   (define GL_CONTEXT_FLAGS #x821E)
   (define GL_CONTEXT_FLAG_DEBUG_BIT #x2)
   (define GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT #x1)
+  (define GL_CONTEXT_FLAG_NO_ERROR_BIT #x8)
   (define GL_CONTEXT_FLAG_ROBUST_ACCESS_BIT #x4)
   (define GL_CONTEXT_LOST #x507)
   (define GL_CONTEXT_PROFILE_MASK #x9126)
@@ -3084,6 +3118,7 @@
   (define GL_FRAGMENT_SHADER #x8B30)
   (define GL_FRAGMENT_SHADER_BIT #x2)
   (define GL_FRAGMENT_SHADER_DERIVATIVE_HINT #x8B8B)
+  (define GL_FRAGMENT_SHADER_INVOCATIONS #x82F4)
   (define GL_FRAGMENT_SUBROUTINE #x92EC)
   (define GL_FRAGMENT_SUBROUTINE_UNIFORM #x92F2)
   (define GL_FRAGMENT_TEXTURE #x829F)
@@ -3137,6 +3172,7 @@
   (define GL_GEOMETRY_SHADER #x8DD9)
   (define GL_GEOMETRY_SHADER_BIT #x4)
   (define GL_GEOMETRY_SHADER_INVOCATIONS #x887F)
+  (define GL_GEOMETRY_SHADER_PRIMITIVES_EMITTED #x82F3)
   (define GL_GEOMETRY_SUBROUTINE #x92EB)
   (define GL_GEOMETRY_SUBROUTINE_UNIFORM #x92F1)
   (define GL_GEOMETRY_TEXTURE #x829E)
@@ -3402,6 +3438,7 @@
   (define GL_MAX_TEXTURE_BUFFER_SIZE #x8C2B)
   (define GL_MAX_TEXTURE_IMAGE_UNITS #x8872)
   (define GL_MAX_TEXTURE_LOD_BIAS #x84FD)
+  (define GL_MAX_TEXTURE_MAX_ANISOTROPY #x84FF)
   (define GL_MAX_TEXTURE_SIZE #xD33)
   (define GL_MAX_TRANSFORM_FEEDBACK_BUFFERS #x8E70)
   (define GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS #x8C8A)
@@ -3465,6 +3502,7 @@
   (define GL_NUM_SAMPLE_COUNTS #x9380)
   (define GL_NUM_SHADER_BINARY_FORMATS #x8DF9)
   (define GL_NUM_SHADING_LANGUAGE_VERSIONS #x82E9)
+  (define GL_NUM_SPIR_V_EXTENSIONS #x9554)
   (define GL_OBJECT_TYPE #x9112)
   (define GL_OFFSET #x92FC)
   (define GL_ONE #x1)
@@ -3492,6 +3530,8 @@
   (define GL_PACK_SKIP_PIXELS #xD04)
   (define GL_PACK_SKIP_ROWS #xD03)
   (define GL_PACK_SWAP_BYTES #xD00)
+  (define GL_PARAMETER_BUFFER #x80EE)
+  (define GL_PARAMETER_BUFFER_BINDING #x80EF)
   (define GL_PATCHES #xE)
   (define GL_PATCH_DEFAULT_INNER_LEVEL #x8E73)
   (define GL_PATCH_DEFAULT_OUTER_LEVEL #x8E74)
@@ -3509,6 +3549,7 @@
   (define GL_POINT_SIZE_RANGE #xB12)
   (define GL_POINT_SPRITE_COORD_ORIGIN #x8CA0)
   (define GL_POLYGON_MODE #xB40)
+  (define GL_POLYGON_OFFSET_CLAMP #x8E1B)
   (define GL_POLYGON_OFFSET_FACTOR #x8038)
   (define GL_POLYGON_OFFSET_FILL #x8037)
   (define GL_POLYGON_OFFSET_LINE #x2A02)
@@ -3517,6 +3558,7 @@
   (define GL_POLYGON_SMOOTH #xB41)
   (define GL_POLYGON_SMOOTH_HINT #xC53)
   (define GL_PRIMITIVES_GENERATED #x8C87)
+  (define GL_PRIMITIVES_SUBMITTED #x82EF)
   (define GL_PRIMITIVE_RESTART #x8F9D)
   (define GL_PRIMITIVE_RESTART_FIXED_INDEX #x8D69)
   (define GL_PRIMITIVE_RESTART_FOR_PATCHES_SUPPORTED #x8221)
@@ -3701,6 +3743,7 @@
   (define GL_SET #x150F)
   (define GL_SHADER #x82E1)
   (define GL_SHADER_BINARY_FORMATS #x8DF8)
+  (define GL_SHADER_BINARY_FORMAT_SPIR_V #x9551)
   (define GL_SHADER_COMPILER #x8DFA)
   (define GL_SHADER_IMAGE_ACCESS_BARRIER_BIT #x20)
   (define GL_SHADER_IMAGE_ATOMIC #x82A6)
@@ -3727,6 +3770,8 @@
   (define GL_SMOOTH_LINE_WIDTH_RANGE #xB22)
   (define GL_SMOOTH_POINT_SIZE_GRANULARITY #xB13)
   (define GL_SMOOTH_POINT_SIZE_RANGE #xB12)
+  (define GL_SPIR_V_BINARY #x9552)
+  (define GL_SPIR_V_EXTENSIONS #x9553)
   (define GL_SRC1_ALPHA #x8589)
   (define GL_SRC1_COLOR #x88F9)
   (define GL_SRC_ALPHA #x302)
@@ -3783,11 +3828,13 @@
   (define GL_TESS_CONTROL_OUTPUT_VERTICES #x8E75)
   (define GL_TESS_CONTROL_SHADER #x8E88)
   (define GL_TESS_CONTROL_SHADER_BIT #x8)
+  (define GL_TESS_CONTROL_SHADER_PATCHES #x82F1)
   (define GL_TESS_CONTROL_SUBROUTINE #x92E9)
   (define GL_TESS_CONTROL_SUBROUTINE_UNIFORM #x92EF)
   (define GL_TESS_CONTROL_TEXTURE #x829C)
   (define GL_TESS_EVALUATION_SHADER #x8E87)
   (define GL_TESS_EVALUATION_SHADER_BIT #x10)
+  (define GL_TESS_EVALUATION_SHADER_INVOCATIONS #x82F2)
   (define GL_TESS_EVALUATION_SUBROUTINE #x92EA)
   (define GL_TESS_EVALUATION_SUBROUTINE_UNIFORM #x92F0)
   (define GL_TESS_EVALUATION_TEXTURE #x829D)
@@ -3892,6 +3939,7 @@
   (define GL_TEXTURE_INTERNAL_FORMAT #x1003)
   (define GL_TEXTURE_LOD_BIAS #x8501)
   (define GL_TEXTURE_MAG_FILTER #x2800)
+  (define GL_TEXTURE_MAX_ANISOTROPY #x84FE)
   (define GL_TEXTURE_MAX_LEVEL #x813D)
   (define GL_TEXTURE_MAX_LOD #x813B)
   (define GL_TEXTURE_MIN_FILTER #x2801)
@@ -3938,8 +3986,10 @@
   (define GL_TRANSFORM_FEEDBACK_BUFFER_SIZE #x8C85)
   (define GL_TRANSFORM_FEEDBACK_BUFFER_START #x8C84)
   (define GL_TRANSFORM_FEEDBACK_BUFFER_STRIDE #x934C)
+  (define GL_TRANSFORM_FEEDBACK_OVERFLOW #x82EC)
   (define GL_TRANSFORM_FEEDBACK_PAUSED #x8E23)
   (define GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN #x8C88)
+  (define GL_TRANSFORM_FEEDBACK_STREAM_OVERFLOW #x82ED)
   (define GL_TRANSFORM_FEEDBACK_VARYING #x92F4)
   (define GL_TRANSFORM_FEEDBACK_VARYINGS #x8C83)
   (define GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH #x8C76)
@@ -4064,9 +4114,11 @@
   (define GL_VERTEX_PROGRAM_POINT_SIZE #x8642)
   (define GL_VERTEX_SHADER #x8B31)
   (define GL_VERTEX_SHADER_BIT #x1)
+  (define GL_VERTEX_SHADER_INVOCATIONS #x82F0)
   (define GL_VERTEX_SUBROUTINE #x92E8)
   (define GL_VERTEX_SUBROUTINE_UNIFORM #x92EE)
   (define GL_VERTEX_TEXTURE #x829B)
+  (define GL_VERTICES_SUBMITTED #x82EE)
   (define GL_VIEWPORT #xBA2)
   (define GL_VIEWPORT_BOUNDS_RANGE #x825D)
   (define GL_VIEWPORT_INDEX_PROVOKING_VERTEX #x825F)

@@ -1,11 +1,12 @@
 (import (rnrs (6))
-        (lyonesse parsing xml)
-        (lyonesse functional)
+        (parsing xml)
+        (gl-ffi-gen private utility)
+        (gl-ffi-gen private cut)
 
-        (glfw parse-api types)
-        (glfw parse-api enums)
-        (glfw parse-api commands)
-        (glfw parse-api features)
+        (gl-ffi-gen types)
+        (gl-ffi-gen enums)
+        (gl-ffi-gen commands)
+        (gl-ffi-gen features)
 
         (srfi :48)
 
@@ -14,7 +15,8 @@
                            mkdir file-directory?
                            path-parent))
 
-(define registry (xml:read (cadr (command-line))))
+(define registry
+  (document-root (xml:read (cadr (command-line)))))
 
 (define (ensure-directory-exists path)
   (if (not (file-directory? path))
@@ -34,7 +36,7 @@
  |#
 (define (patch-types types)
   (cons '("GLhandleARB" . unsigned-int)
-        (remp (compose ($ equal? "GLhandleARB" <>) car) types)))
+        (remp (compose (cut equal? "GLhandleARB" <>) car) types)))
 
 (define (write-lines port . lines)
   (for-each (lambda (l)
@@ -83,15 +85,15 @@
              [name        (feature-name f)]
              [command-lst (extend-commands command-lst* f)]
              [enum-lst    (extend-enums enum-lst* f)]
-             [port        (open-file-output-port (format "glfw/gl/~a.scm" name)
+             [port        (open-file-output-port (format "lib/gl/~a.scm" name)
                                                  (file-options no-fail)
                                                  'line (native-transcoder))])
 
         (write-lines port
           (format "(library (glfw gl ~a)" name)
           "  (export"
-          (map ($ format "    ~a" <>) command-lst)
-          (map ($ format "    ~a" <>) enum-lst)
+          (map (cut format "    ~a" <>) command-lst)
+          (map (cut format "    ~a" <>) enum-lst)
           "  )"
           ""
           "  (import (rnrs base(6))"
@@ -129,12 +131,10 @@
 
 (let* ([types    (get-types registry)]
        [types*   (patch-types types)]
-       [type-reg (let ([safe-cdr (lambda (p) (and (pair? p) (cdr p)))])
-                    (compose safe-cdr ($ assoc <> types*)))]
-       [commands (get-commands registry type-reg)]
+       [commands (get-commands registry types*)]
        [enums    (get-enums registry)]
        [features (get-features registry)])
  
-  (ensure-directory-exists "glfw/gl")
+  (ensure-directory-exists "lib/gl")
   (write-gl-loaders enums commands features)
 )
